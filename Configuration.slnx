@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="CustomConfigurationProvider/CustomConfigurationProvider.csproj" />
+  <Project Path="CustomJsonConfigurationProvider.Test/CustomJsonConfigurationProvider.Test.csproj" Id="4a085bc8-a32e-4660-a8f7-13cd26fae80b" />
+  <Project Path="CustomJsonConfigurationProvider/CustomJsonConfigurationProvider.csproj" />
+</Solution>
