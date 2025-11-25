@@ -4,6 +4,16 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+	  <Version>1.0.0.0</Version>
+	  <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+	  <Configurations>Debug;Release;debug libs</Configurations>
+	  <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+	  <Title>Custom json configuration provider</Title>
+	  <PackageOutputPath>$(SolutionDir)\packages</PackageOutputPath>
+	  <PackageId>$(AssemblyName)</PackageId>
+	  <PackageVersion>$(Version)</PackageVersion>
+	  <Authors>innasolp</Authors>
+	  <RepositoryUrl>https://github.com/innasolp/Configuration</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
@@ -15,5 +25,9 @@
 		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.0" />
 	</ItemGroup>
+
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+	  <Exec Command="set libDir=$(ProjectDir)\..\..\Libs\Configuration\CustomJsonConfigurationProvider&#xD;&#xA;set currentLibDir=$(SolutionDir)\Libs\Configuration\CustomJsonConfigurationProvider&#xD;&#xA;if not exist %25libDir%25 mkdir %25libDir%25&#xD;&#xA;if not exist %25currentLibDir%25 mkdir %25currentLibDir%25&#xD;&#xA;xcopy /E /Y &quot;$(TargetDir)&quot; &quot;%25libDir%25&quot;&#xD;&#xA;xcopy /E /Y &quot;$(TargetDir)&quot; &quot;%25currentLibDir%25&quot;" />
+	</Target>
 
 </Project>

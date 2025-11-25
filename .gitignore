@@ -361,3 +361,20 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/Libs/Configuration/CustomConfigurationProvider
+/Libs/Configuration/CustomJsonConfigurationProvider/runtimes/browser/lib/net8.0
+/Libs/Configuration/CustomJsonConfigurationProvider/CustomConfigurationProvider.dll
+/Libs/Configuration/CustomJsonConfigurationProvider/CustomJsonConfigurationProvider.deps.json
+/Libs/Configuration/CustomJsonConfigurationProvider/CustomJsonConfigurationProvider.dll
+/Libs/Configuration/CustomJsonConfigurationProvider/Microsoft.Extensions.Configuration.Abstractions.dll
+/Libs/Configuration/CustomJsonConfigurationProvider/Microsoft.Extensions.Configuration.Binder.dll
+/Libs/Configuration/CustomJsonConfigurationProvider/Microsoft.Extensions.Configuration.dll
+/Libs/Configuration/CustomJsonConfigurationProvider/Microsoft.Extensions.Configuration.FileExtensions.dll
+/Libs/Configuration/CustomJsonConfigurationProvider/Microsoft.Extensions.Configuration.Json.dll
+/Libs/Configuration/CustomJsonConfigurationProvider/Microsoft.Extensions.FileProviders.Abstractions.dll
+/Libs/Configuration/CustomJsonConfigurationProvider/Microsoft.Extensions.FileProviders.Physical.dll
+/Libs/Configuration/CustomJsonConfigurationProvider/Microsoft.Extensions.FileSystemGlobbing.dll
+/Libs/Configuration/CustomJsonConfigurationProvider/Microsoft.Extensions.Primitives.dll
+/Libs/Configuration/CustomJsonConfigurationProvider/System.IO.Pipelines.dll
+/Libs/Configuration/CustomJsonConfigurationProvider/System.Text.Encodings.Web.dll
+/Libs/Configuration/CustomJsonConfigurationProvider/System.Text.Json.dll
