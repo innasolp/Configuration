@@ -2,7 +2,7 @@
 
 public interface ICustomConfigurationRule
 {
-    bool Check(string value);
+    bool Check(string sectionName, string value);
 
     string TransformValue(string value);
 }

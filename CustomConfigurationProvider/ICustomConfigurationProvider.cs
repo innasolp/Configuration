@@ -4,4 +4,5 @@ namespace CustomConfigurationProvider;
 
 public interface ICustomConfigurationProvider: IConfigurationProvider
 {
+    ICustomConfigurationSource CustomConfigurationSource { get; }
 }

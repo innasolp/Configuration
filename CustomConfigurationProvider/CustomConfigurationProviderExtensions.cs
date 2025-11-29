@@ -7,18 +7,18 @@ public static class CustomConfigurationProviderExtensions
     public static IConfigurationBuilder AddCustomConfigurationRule<TConfigurationSource>(this IConfigurationBuilder builder, ICustomConfigurationRule customConfigurationRule)
         where TConfigurationSource : ICustomConfigurationSource
     {
-        var customJsonConfigurationSource = builder.Sources.OfType<TConfigurationSource>().FirstOrDefault();
+        var customJsonConfigurationSources = builder.Sources.OfType<TConfigurationSource>();
 
-        customJsonConfigurationSource?.Rules.Add(customConfigurationRule);
+        customJsonConfigurationSources.ToList().ForEach(s => s.Rules.Add(customConfigurationRule));
 
         return builder;
     }
 
     public static IConfigurationBuilder AddCustomConfigurationRule(this IConfigurationBuilder builder, ICustomConfigurationRule customConfigurationRule)
     {
-        var customJsonConfigurationSource = builder.Sources.OfType<ICustomConfigurationSource>().FirstOrDefault();
+        var customJsonConfigurationSources = builder.Sources.OfType<ICustomConfigurationSource>();
 
-        customJsonConfigurationSource?.Rules.Add(customConfigurationRule);
+        customJsonConfigurationSources.ToList().ForEach(s => s.Rules.Add(customConfigurationRule));
 
         return builder;
     }
@@ -27,10 +27,25 @@ public static class CustomConfigurationProviderExtensions
         where TRule : ICustomConfigurationRule, new()
         where TConfigurationSource : FileConfigurationSource, ICustomConfigurationSource
     {
-        var customJsonConfigurationSource = builder.Sources.OfType<TConfigurationSource>().FirstOrDefault();
+        var customJsonConfigurationSources = builder.Sources.OfType<TConfigurationSource>();
 
-        customJsonConfigurationSource?.Rules.Add(new TRule());
+        customJsonConfigurationSources.ToList().ForEach(s => s.Rules.Add(new TRule()));
 
         return builder;
+    }
+
+    public static ICustomConfigurationSource AddCustomConfigurationRule(this ICustomConfigurationSource source, ICustomConfigurationRule customConfigurationRule)
+    {
+        source.Rules.Add(customConfigurationRule);
+
+        return source;
+    }
+
+    public static ICustomConfigurationSource AddCustomConfigurationRule<TRule>(this ICustomConfigurationSource source)
+        where TRule : ICustomConfigurationRule, new()       
+    {
+        source.Rules.Add(new TRule());
+
+        return source;
     }
 }
