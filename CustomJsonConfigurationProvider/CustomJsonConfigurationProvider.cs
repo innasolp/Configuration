@@ -6,6 +6,8 @@ public class CustomJsonConfigurationProvider : JsonConfigurationProvider, ICusto
 {
     private CustomJsonConfigurationSource? CustomJsonConfigurationSource => Source as CustomJsonConfigurationSource;
 
+    ICustomConfigurationSource ICustomConfigurationProvider.CustomConfigurationSource => CustomJsonConfigurationSource;
+
     public CustomJsonConfigurationProvider(CustomJsonConfigurationSource source) : base(source)
     {
         source.Rules.CollectionChanged += Rules_CollectionChanged;
@@ -32,7 +34,7 @@ public class CustomJsonConfigurationProvider : JsonConfigurationProvider, ICusto
 
     private void SetRule(ICustomConfigurationRule rule)
     {
-        foreach (var dataSection in Data.Where(d => rule.Check(d.Value)))
+        foreach (var dataSection in Data.Where(d => rule.Check(d.Key, d.Value)))
             Data[dataSection.Key] = rule.TransformValue(dataSection.Value);
     }
 }

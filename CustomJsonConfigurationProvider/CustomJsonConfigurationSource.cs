@@ -14,6 +14,8 @@ public class CustomJsonConfigurationSource : JsonConfigurationSource, ICustomCon
 
     IList<ICustomConfigurationRule> ICustomConfigurationSource.Rules => Rules;
 
+    internal Guid Guid { get; } = Guid.NewGuid();
+
     public override IConfigurationProvider Build(IConfigurationBuilder builder)
     {
         EnsureDefaults(builder);

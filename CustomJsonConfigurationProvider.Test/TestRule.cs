@@ -4,7 +4,7 @@ namespace CustomJsonConfigurationProvider.Test;
 
 internal class TestRule : ICustomConfigurationRule
 {
-    public bool Check(string value)
+    public bool Check(string sectionName, string value)
     {
         return value.StartsWith("${") && value.EndsWith("}");
     }
