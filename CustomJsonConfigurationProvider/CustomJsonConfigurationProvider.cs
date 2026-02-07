@@ -1,19 +1,22 @@
 ﻿using CustomConfigurationProvider;
 using Microsoft.Extensions.Configuration.Json;
+
+using CustomJsonSource = CustomJsonConfigurationProvider.CustomJsonConfigurationSource;
+
 namespace CustomJsonConfigurationProvider;
 
 public class CustomJsonConfigurationProvider : JsonConfigurationProvider, ICustomConfigurationProvider
 {
-    private CustomJsonConfigurationSource CustomJsonConfigurationSource => (Source as CustomJsonConfigurationSource)!;
+    private CustomJsonSource CustomJsonConfigurationSource => (Source as CustomJsonSource)!;
 
     ICustomConfigurationSource ICustomConfigurationProvider.CustomConfigurationSource => CustomJsonConfigurationSource;
 
-    public CustomJsonConfigurationProvider(CustomJsonConfigurationSource source) : base(source)
+    public CustomJsonConfigurationProvider(CustomJsonSource source) : base(source)
     {
-        if(Source is not CustomJsonConfigurationSource customJsonConfigurationSource)
+        if(Source is not CustomJsonSource)
             throw new ArgumentException("Source must be of type CustomJsonConfigurationSource");
 
-        customJsonConfigurationSource.Rules.CollectionChanged += Rules_CollectionChanged;
+        CustomJsonConfigurationSource.Rules.CollectionChanged += Rules_CollectionChanged;
     }
 
     private void Rules_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -22,6 +25,8 @@ public class CustomJsonConfigurationProvider : JsonConfigurationProvider, ICusto
         {
             foreach (var rule in e.NewItems.OfType<ICustomConfigurationRule>())
                 SetRule(rule);
+
+            OnReload();
         }
     }
 
@@ -29,15 +34,20 @@ public class CustomJsonConfigurationProvider : JsonConfigurationProvider, ICusto
     {
         base.Load();
 
-        if (CustomJsonConfigurationSource == null) return;
-
         foreach (var rule in CustomJsonConfigurationSource.Rules)
             SetRule(rule);
     }
 
     private void SetRule(ICustomConfigurationRule rule)
     {
-        foreach (var dataSection in Data.Where(d => d.Value is not null && rule.Check(d.Key, d.Value)))
+        foreach (var dataSection in Data.Where(d => d.Value is not null && rule.Check(d.Key, d.Value)).ToList())
             Data[dataSection.Key] = rule.TransformValue(dataSection.Value!);
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        CustomJsonConfigurationSource.Rules.CollectionChanged -= Rules_CollectionChanged;
+
+        base.Dispose(disposing);
     }
 }

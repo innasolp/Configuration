@@ -10,10 +10,11 @@ public static class CustomJsonConfigurationProviderExtensions
 
     public static IConfigurationBuilder SetAppSettingsCustomJsonConfigurationProvider(this IConfigurationBuilder builder)
     {
-        var currentProvider = builder.Sources.FirstOrDefault(s => s is JsonConfigurationSource jsonConfigSource 
-                                && jsonConfigSource.Path == DefaultConfigurationFileName);
+        var providers = builder.Sources.Where(s => s is JsonConfigurationSource jsonConfigSource
+                && string.Equals(jsonConfigSource.Path, DefaultConfigurationFileName, StringComparison.OrdinalIgnoreCase)).ToList();
 
-        if(currentProvider != null) builder.Sources.Remove(currentProvider);
+        foreach (var provider in providers)
+            builder.Sources.Remove(provider);
 
         return builder.Add(new CustomJsonConfigurationSource() { Path = DefaultConfigurationFileName });
     }
@@ -22,6 +23,6 @@ public static class CustomJsonConfigurationProviderExtensions
     {
         var source = new CustomJsonConfigurationSource() { Path = fileName };
         builder.Add(source);
-        return builder.Sources.OfType<CustomJsonConfigurationSource>().First(s => s.Guid == source.Guid);
+        return source;
     }
 }
