@@ -6,11 +6,16 @@ namespace CustomJsonConfigurationProvider;
 
 public static class CustomJsonConfigurationProviderExtensions
 {
+    private const string DefaultConfigurationFileName = "appsettings.json";
+
     public static IConfigurationBuilder SetAppSettingsCustomJsonConfigurationProvider(this IConfigurationBuilder builder)
     {
-        var currentProvider = builder.Sources.FirstOrDefault(s => s is JsonConfigurationSource jsonConfigSource && jsonConfigSource.Path == "appsettings.json");
+        var currentProvider = builder.Sources.FirstOrDefault(s => s is JsonConfigurationSource jsonConfigSource 
+                                && jsonConfigSource.Path == DefaultConfigurationFileName);
+
         if(currentProvider != null) builder.Sources.Remove(currentProvider);
-        return builder.Add(new CustomJsonConfigurationSource() { Path = "appsettings.json"});
+
+        return builder.Add(new CustomJsonConfigurationSource() { Path = DefaultConfigurationFileName });
     }
 
     public static ICustomConfigurationSource AddCustomJsonConfigurationProvider(this IConfigurationBuilder builder, string fileName)
