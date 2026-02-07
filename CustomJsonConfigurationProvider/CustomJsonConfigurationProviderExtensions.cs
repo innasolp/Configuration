@@ -21,6 +21,9 @@ public static class CustomJsonConfigurationProviderExtensions
 
     public static ICustomConfigurationSource AddCustomJsonConfigurationProvider(this IConfigurationBuilder builder, string fileName)
     {
+        if(string.IsNullOrEmpty(fileName))
+            throw new ArgumentNullException(nameof(fileName));
+
         var source = new CustomJsonConfigurationSource() { Path = fileName };
         builder.Add(source);
         return source;

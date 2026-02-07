@@ -1,22 +1,23 @@
 ﻿using CustomConfigurationProvider;
 using Microsoft.Extensions.Configuration.Json;
 
-using CustomJsonSource = CustomJsonConfigurationProvider.CustomJsonConfigurationSource;
-
 namespace CustomJsonConfigurationProvider;
 
 public class CustomJsonConfigurationProvider : JsonConfigurationProvider, ICustomConfigurationProvider
 {
-    private CustomJsonSource CustomJsonConfigurationSource => (Source as CustomJsonSource)!;
+    private readonly CustomJsonConfigurationSource _customJsonConfigurationSource;
 
-    ICustomConfigurationSource ICustomConfigurationProvider.CustomConfigurationSource => CustomJsonConfigurationSource;
+    ICustomConfigurationSource ICustomConfigurationProvider.CustomConfigurationSource => _customJsonConfigurationSource;
 
-    public CustomJsonConfigurationProvider(CustomJsonSource source) : base(source)
+    public CustomJsonConfigurationProvider(CustomJsonConfigurationSource source) : base(source)
     {
-        if(Source is not CustomJsonSource)
-            throw new ArgumentException("Source must be of type CustomJsonConfigurationSource");
+        if(Source is not CustomJsonConfigurationSource customJsonConfigurationSource)
+            throw new ArgumentException($"Source must be of type {typeof(CustomJsonConfigurationSource).FullName}, but was {Source?.GetType().FullName ?? "null"}.",
+                            nameof(source));
 
-        CustomJsonConfigurationSource.Rules.CollectionChanged += Rules_CollectionChanged;
+        _customJsonConfigurationSource = customJsonConfigurationSource;
+
+        _customJsonConfigurationSource.Rules.CollectionChanged += Rules_CollectionChanged;
     }
 
     private void Rules_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -34,7 +35,7 @@ public class CustomJsonConfigurationProvider : JsonConfigurationProvider, ICusto
     {
         base.Load();
 
-        foreach (var rule in CustomJsonConfigurationSource.Rules)
+        foreach (var rule in _customJsonConfigurationSource.Rules)
             SetRule(rule);
     }
 
@@ -46,7 +47,7 @@ public class CustomJsonConfigurationProvider : JsonConfigurationProvider, ICusto
 
     protected override void Dispose(bool disposing)
     {
-        CustomJsonConfigurationSource.Rules.CollectionChanged -= Rules_CollectionChanged;
+        _customJsonConfigurationSource.Rules.CollectionChanged -= Rules_CollectionChanged;
 
         base.Dispose(disposing);
     }
