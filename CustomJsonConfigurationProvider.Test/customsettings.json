@@ -1,5 +1,8 @@
 ﻿{
   "TestCustom": {
     "TestCustomSection": "${TestValueCustom}"
+  },
+  "TestCustomArray": {
+    "TestCustomArraySection": [ "${TestValueCustom}" ]
   }
 }

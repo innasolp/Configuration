@@ -2,11 +2,12 @@
 
 namespace CustomJsonConfigurationProvider.Test;
 
-internal class TestArrayRule(string[] strings) : CustomArrayRule
+internal class TestArrayRule(string arraySectionName, string[] strings) : CustomArrayRule
 {
-    public override bool Check(IDictionary<string, string?> data, string sectionName, string? value)
+    protected override bool CheckSection(IDictionary<string, string?> data, string sectionName, string? value)
     {
-        return value?.StartsWith("${") == true && value?.EndsWith("}") == true;
+        return sectionName.Contains(arraySectionName) 
+            && value?.StartsWith("${") == true && value?.EndsWith("}") == true;
     }
 
     protected override string[] GetArray(string? value)

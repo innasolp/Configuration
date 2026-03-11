@@ -25,7 +25,17 @@ public abstract class CustomArrayRule : ICustomConfigurationRule
         return sectionName.Remove(place, sectionIndex.Length).Insert(place, "");
     }
 
-    public abstract bool Check(IDictionary<string, string?> data, string sectionName, string? value);
+    public bool Check(IDictionary<string, string?> data, string sectionName, string? value)
+    {
+        return SectionIsArray(sectionName) && CheckSection(data, sectionName, value);
+    }
+
+    protected abstract bool CheckSection(IDictionary<string, string?> data, string sectionName, string? value);
+
+    protected virtual bool SectionIsArray(string sectionName)
+    {
+        return sectionName.Contains(sectionIndex);
+    }
 
     protected abstract string[] GetArray(string? value);
 

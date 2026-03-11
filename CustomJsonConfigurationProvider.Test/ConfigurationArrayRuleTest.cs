@@ -12,10 +12,11 @@ public class ConfigurationArrayRuleTest
         var builder = Host.CreateApplicationBuilder();
         builder.Configuration.SetAppSettingsCustomJsonConfigurationProvider();
 
+        var testArraySection = "TestArraySection";
         var strings = new string[] { "test1", "test2"};
-        builder.Configuration.AddCustomConfigurationRule<CustomJsonConfigurationSource>(new TestArrayRule(strings));
+        builder.Configuration.AddCustomConfigurationRule<CustomJsonConfigurationSource>(new TestArrayRule(testArraySection, strings));
 
-        Assert.Equal(strings, builder.Configuration.GetSection("Test:TestSection").Get<string[]>());
+        Assert.Equal(strings, builder.Configuration.GetSection($"TestArray:{testArraySection}").Get<string[]>());
     }
 
     [Fact]
@@ -23,9 +24,11 @@ public class ConfigurationArrayRuleTest
     {
         var builder = Host.CreateApplicationBuilder();
         var source = builder.Configuration.AddCustomJsonConfigurationProvider("customsettings.json");
-        var strings = new string[] { "test1", "test2" };
-        source.AddCustomConfigurationRule(new TestArrayRule(strings));
 
-        Assert.Equal(strings, builder.Configuration.GetSection("TestCustom:TestCustomSection").Get<string[]>());
+        var testArraySection = "TestCustomArraySection"; 
+        var strings = new string[] { "test1", "test2" };
+        source.AddCustomConfigurationRule(new TestArrayRule(testArraySection, strings));
+
+        Assert.Equal(strings, builder.Configuration.GetSection($"TestCustomArray:{testArraySection}").Get<string[]>());
     }
 }

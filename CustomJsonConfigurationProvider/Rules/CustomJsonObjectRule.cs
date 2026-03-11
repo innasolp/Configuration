@@ -11,7 +11,7 @@ public abstract class CustomJsonObjectRule : ICustomConfigurationRule
 
     public virtual void Apply(IDictionary<string, string?> data, string sectionName, string? value)
     {
-        using var jsonDoc = GetJson(data, sectionName, value);
+        using var jsonDoc = CreateJson(data, sectionName, value);
 
         data.Remove(sectionName);
 
@@ -19,7 +19,12 @@ public abstract class CustomJsonObjectRule : ICustomConfigurationRule
 
         try
         {
-            FlattenElement(data, objectSectionName, jsonDoc.RootElement);
+            var sectionsData = new Dictionary<string, string?>();
+
+            FlattenElement(sectionsData, objectSectionName, jsonDoc.RootElement);
+
+            foreach (var sectionData in sectionsData)
+                data.Add(sectionData.Key, sectionData.Value);
         }
         catch
         {
@@ -37,7 +42,7 @@ public abstract class CustomJsonObjectRule : ICustomConfigurationRule
         return sectionName.Remove(place, sectionIndex.Length).Insert(place, "");
     }
 
-    protected abstract JsonDocument GetJson(IDictionary<string, string?> data, string sectionName, string? value);
+    protected abstract JsonDocument CreateJson(IDictionary<string, string?> data, string sectionName, string? value);
 
     protected virtual void FlattenElement(IDictionary<string, string?> data, string prefix, JsonElement element)
     {
