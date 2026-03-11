@@ -4,7 +4,7 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-	  <Version>1.0.0.2</Version>
+	  <Version>1.0.1.0</Version>
 	  <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 	  <Configurations>Debug;Release;debug libs</Configurations>
 	  <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
@@ -20,9 +20,5 @@
 		<PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.4" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="9.0.4" />
 	</ItemGroup>
-
-	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-	  <Exec Command="set libDir=$(ProjectDir)\..\..\Libs\Configuration\CustomConfigurationProvider&#xD;&#xA;set currentLibDir=$(SolutionDir)\Libs\Configuration\CustomConfigurationProvider&#xD;&#xA;if not exist %25libDir%25 mkdir %25libDir%25&#xD;&#xA;if not exist %25currentLibDir%25 mkdir %25currentLibDir%25&#xD;&#xA;xcopy /E /Y &quot;$(TargetDir)&quot; &quot;%25libDir%25&quot;&#xD;&#xA;xcopy /E /Y &quot;$(TargetDir)&quot; &quot;%25currentLibDir%25&quot;" />
-	</Target>
 
 </Project>
