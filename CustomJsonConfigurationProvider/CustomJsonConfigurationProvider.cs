@@ -41,8 +41,8 @@ public class CustomJsonConfigurationProvider : JsonConfigurationProvider, ICusto
 
     private void SetRule(ICustomConfigurationRule rule)
     {
-        foreach (var dataSection in Data.Where(d => d.Value is not null && rule.Check(d.Key, d.Value)).ToList())
-            Data[dataSection.Key] = rule.TransformValue(dataSection.Value!);
+        foreach (var dataSection in Data.Where(d => d.Value is not null && rule.Check(Data, d.Key, d.Value)).ToList())
+            rule.Apply(Data, dataSection.Key, dataSection.Value);
     }
 
     protected override void Dispose(bool disposing)
