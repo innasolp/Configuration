@@ -1,8 +1,10 @@
-﻿namespace CustomConfigurationProvider.Rules;
+﻿using static System.Runtime.InteropServices.JavaScript.JSType;
+
+namespace CustomConfigurationProvider.Rules;
 
 public abstract class CustomArrayRule : ICustomConfigurationRule
 {
-    private const string sectionIndex = ":0";
+    private const string firstSectionIndexKey = ":0";
 
     public virtual void Apply(IDictionary<string, string?> data, string sectionName, string? value)
     {
@@ -10,19 +12,34 @@ public abstract class CustomArrayRule : ICustomConfigurationRule
 
         data.Remove(sectionName);
         
-        var arraySectionName = GetArraySectionName(sectionName);
+        var arraySectionPrefix = GetArraySectionPrefix(sectionName);
+        var arrayCount = GetArrayCount(data, arraySectionPrefix);
+        var arraySectionName = arrayCount > 1 ? sectionName : arraySectionPrefix;
 
         SetArray(data, arraySectionName, strings);
     }
 
-    private static string GetArraySectionName(string sectionName)
+    private static int GetArrayCount(IDictionary<string, string?> data, string arraySectionPrefix)
     {
-        int place = sectionName.LastIndexOf(sectionIndex);
+        return data.Keys
+        .Where(k => k.StartsWith(arraySectionPrefix))
+        .Select(k => {
+            var remaining = k.Substring(arraySectionPrefix.Length);
+            int indexOfColon = remaining.IndexOf(':');
+            return indexOfColon == -1 ? remaining : remaining.Substring(0, indexOfColon);
+        })
+        .Distinct()
+        .Count();
+    }
+
+    private static string GetArraySectionPrefix(string sectionName)
+    {
+        int place = sectionName.LastIndexOf(firstSectionIndexKey);
 
         if (place == -1)
             return sectionName; 
 
-        return sectionName.Remove(place, sectionIndex.Length).Insert(place, "");
+        return sectionName.Remove(place, firstSectionIndexKey.Length).Insert(place, "");
     }
 
     public bool Check(IDictionary<string, string?> data, string sectionName, string? value)
@@ -34,7 +51,7 @@ public abstract class CustomArrayRule : ICustomConfigurationRule
 
     protected virtual bool SectionIsArray(string sectionName)
     {
-        return sectionName.Contains(sectionIndex);
+        return sectionName.Contains(firstSectionIndexKey);
     }
 
     protected abstract string[] GetArray(string? value);
