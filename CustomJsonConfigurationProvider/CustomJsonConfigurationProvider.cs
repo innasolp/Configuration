@@ -35,10 +35,10 @@ public class CustomJsonConfigurationProvider : JsonConfigurationProvider, ICusto
 
     public override void Load()
     {
+        base.Load();
+
         lock (_loadLock)
         {
-            base.Load();
-
             foreach (var rule in _customJsonConfigurationSource.Rules)
                 SetRule(rule);
         }
@@ -58,7 +58,10 @@ public class CustomJsonConfigurationProvider : JsonConfigurationProvider, ICusto
 
     protected virtual void ApplyData(Dictionary<string, string?> newData)
     {
-        Data = newData;
+        Data.Clear();
+
+        foreach (var key in newData.Keys)
+            Data.Add(key, newData[key]);
     }
 
     protected override void Dispose(bool disposing)
