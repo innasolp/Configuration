@@ -26,8 +26,11 @@ public class CustomJsonConfigurationProvider : JsonConfigurationProvider, ICusto
     {
         if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add && e.NewItems?.Count > 0)
         {
-            foreach (var rule in e.NewItems.OfType<ICustomConfigurationRule>())
-                SetRule(rule);
+            lock (_loadLock)
+            {
+                foreach (var rule in e.NewItems.OfType<ICustomConfigurationRule>())
+                    SetRule(rule);
+            }
 
             OnReload();
         }
@@ -35,10 +38,10 @@ public class CustomJsonConfigurationProvider : JsonConfigurationProvider, ICusto
 
     public override void Load()
     {
+        base.Load();
+
         lock (_loadLock)
         {
-            base.Load();
-
             foreach (var rule in _customJsonConfigurationSource.Rules)
                 SetRule(rule);
         }
@@ -58,7 +61,10 @@ public class CustomJsonConfigurationProvider : JsonConfigurationProvider, ICusto
 
     protected virtual void ApplyData(Dictionary<string, string?> newData)
     {
-        Data = newData;
+        Data.Clear();
+
+        foreach (var key in newData.Keys)
+            Data.Add(key, newData[key]);
     }
 
     protected override void Dispose(bool disposing)
