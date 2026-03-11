@@ -10,9 +10,19 @@ public abstract class CustomArrayRule : ICustomConfigurationRule
 
         data.Remove(sectionName);
         
-        var arraySectionName = sectionName.EndsWith(sectionIndex) ? sectionName.Replace(sectionIndex, "") : sectionName;
+        var arraySectionName = GetArraySectionName(sectionName);
 
         SetArray(data, arraySectionName, strings);
+    }
+
+    private static string GetArraySectionName(string sectionName)
+    {
+        int place = sectionName.LastIndexOf(sectionIndex);
+
+        if (place == -1)
+            return sectionName; 
+
+        return sectionName.Remove(place, sectionIndex.Length).Insert(place, "");
     }
 
     public abstract bool Check(IDictionary<string, string?> data, string sectionName, string? value);

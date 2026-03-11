@@ -15,7 +15,7 @@ public abstract class CustomJsonObjectRule : ICustomConfigurationRule
 
         data.Remove(sectionName);
 
-        var objectSectionName = sectionName.EndsWith(sectionIndex) ? sectionName.Replace(sectionIndex, "") : sectionName;
+        var objectSectionName = GetObjectSectionName(sectionName);
 
         try
         {
@@ -25,6 +25,16 @@ public abstract class CustomJsonObjectRule : ICustomConfigurationRule
         {
             data[sectionName] = value;
         }
+    }
+
+    private static string GetObjectSectionName(string sectionName)
+    {
+        int place = sectionName.LastIndexOf(sectionIndex);
+
+        if (place == -1)
+            return sectionName;
+
+        return sectionName.Remove(place, sectionIndex.Length).Insert(place, "");
     }
 
     protected abstract JsonDocument GetJson(IDictionary<string, string?> data, string sectionName, string? value);
