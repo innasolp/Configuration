@@ -26,8 +26,11 @@ public class CustomJsonConfigurationProvider : JsonConfigurationProvider, ICusto
     {
         if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add && e.NewItems?.Count > 0)
         {
-            foreach (var rule in e.NewItems.OfType<ICustomConfigurationRule>())
-                SetRule(rule);
+            lock (_loadLock)
+            {
+                foreach (var rule in e.NewItems.OfType<ICustomConfigurationRule>())
+                    SetRule(rule);
+            }
 
             OnReload();
         }
